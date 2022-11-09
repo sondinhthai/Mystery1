@@ -11,8 +11,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Mystery1"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
+        <activity
+            android:name=".view.activity.StartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.MainActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.MainActivity"
+            android:exported="false" />
         <activity
             android:name=".view.activity.SplashActivity"
             android:exported="true">
@@ -22,9 +31,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".view.activity.MainActivity"
-            android:exported="false" />
     </application>
 
 </manifest>
