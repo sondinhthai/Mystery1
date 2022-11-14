@@ -6,6 +6,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/side_nav_bar"
         tools:context=".view.activity.StartActivity">
 
         <TextView
@@ -14,7 +15,9 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="START"
-            android:textSize="30dp"
+            android:textColor="@color/white"
+            android:textSize="45dp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

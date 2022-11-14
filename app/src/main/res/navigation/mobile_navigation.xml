@@ -8,14 +8,14 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.mystery1.view.activity.ui.home.HomeFragment"
-        android:label="@string/menu_home"
+        android:label="@string/video"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.example.mystery1.view.activity.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:name="com.example.mystery1.view.fragment.DocumentsFragment"
+        android:label="@string/document"
+        tools:layout="@layout/fragment_documents" />
 
     <fragment
         android:id="@+id/nav_slideshow"

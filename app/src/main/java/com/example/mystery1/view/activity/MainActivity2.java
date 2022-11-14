@@ -1,17 +1,29 @@
 package com.example.mystery1.view.activity;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 
 import com.example.mystery1.R;
+import com.example.mystery1.control.remote.RequestDocumentsManager;
+import com.example.mystery1.control.rest.Callback;
 import com.example.mystery1.databinding.ActivityMain2Binding;
+import com.example.mystery1.models.Documents;
+import com.example.mystery1.util.Utility;
+import com.example.mystery1.view.adapter.DocumentsAdapter;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.appcompat.view.menu.MenuAdapter;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.widget.SearchView;
+import androidx.customview.widget.Openable;
 import androidx.databinding.DataBindingUtil;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -20,7 +32,15 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity2 extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
+import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
+import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
+
+public class MainActivity2 extends AppCompatActivity implements RequestDocumentsManager.OnFetchDataListener{
     public static void starter(Context context) {
         Intent intent = new Intent(context, MainActivity2.class);
         context.startActivity(intent);
@@ -28,6 +48,8 @@ public class MainActivity2 extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMain2Binding binding;
+    private RequestDocumentsManager requestDocumentsManager;
+    private DocumentsAdapter documentsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,19 +57,17 @@ public class MainActivity2 extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main2);
 
+        requestDocumentsManager = new RequestDocumentsManager();
+        documentsAdapter = new DocumentsAdapter();
+
         setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_SHORT).show();
-            }
-        });
+
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
+//        navigationView.setBackgroundColor(getResources().getColor(R.color.black));
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
+
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
                 .setOpenableLayout(drawer)
@@ -61,6 +81,38 @@ public class MainActivity2 extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_activity2, menu);
+//        MenuItem searchItem = menu.findItem(R.id.action_search);
+
+//        SearchManager searchManager = (SearchManager) MainActivity2.this.getSystemService(Context.SEARCH_SERVICE);
+//
+//        SearchView searchView = null;
+//        if (searchItem != null) {
+//            searchView = (SearchView) searchItem.getActionView();
+//        }
+//        if (searchView != null) {
+//            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity2.this.getComponentName()));
+//        }
+//
+//        SearchView finalSearchView = searchView;
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                if( !finalSearchView.isIconified()) {
+//                    finalSearchView.setIconified(true);
+//                }
+//                searchItem.collapseActionView();
+//
+//                if (Objects.equals(mAppBarConfiguration.getOpenableLayout(), R.id.nav_gallery)){
+//                    requestDocumentsManager.getDocument(MainActivity2.this, query);
+//                }
+//
+//                return false;
+//            }
+//            @Override
+//            public boolean onQueryTextChange(String s) {
+//                return false;
+//            }
+//        });
         return true;
     }
 
@@ -73,5 +125,26 @@ public class MainActivity2 extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+    }
+
+    private void showData(Documents document){
+        List<Documents> documents = new ArrayList<>();
+        documents.add(document);
+        documentsAdapter.setDocuments(documents);
+    }
+
+    @Override
+    public void onFetchData(Documents documents, String title) {
+        if (documents == null) {
+            Utility.Notice.snack(binding.getRoot(), "No data");
+            return;
+        } else {
+            showData(documents);
+        }
+    }
+
+    @Override
+    public void onError(String title) {
+
     }
 }

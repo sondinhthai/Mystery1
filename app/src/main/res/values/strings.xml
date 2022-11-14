@@ -15,4 +15,11 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+
+    //document
+    <string name="title">title</string>
+    <string name="content">content</string>
+    <string name="imgUrl">imgUrl</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_bookmark">Bookmark</string>
 </resources>
