@@ -22,4 +22,7 @@
     <string name="imgUrl">imgUrl</string>
     <string name="menu_search">Search</string>
     <string name="menu_bookmark">Bookmark</string>
+    <string name="no_bookmark_here">No bookmark here</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="settings">Settings</string>
 </resources>

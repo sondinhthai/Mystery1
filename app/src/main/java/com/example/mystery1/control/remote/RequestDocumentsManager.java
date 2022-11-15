@@ -14,7 +14,9 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
@@ -42,6 +44,59 @@ public class RequestDocumentsManager {
 
             @Override
             public void onFailure(Call<List<Documents>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void getAllBookmark(Callback callback) {
+        CallDocument callDocument = retrofit.create(CallDocument.class);
+        callDocument.getAllBookmark().enqueue(new retrofit2.Callback<List<Documents>>() {
+            @Override
+            public void onResponse(Call<List<Documents>> call, Response<List<Documents>> response) {
+                callback.getDocument(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<Documents>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void saveBookmarks(Documents documents){
+        CallDocument callDocument = retrofit.create(CallDocument.class);
+        callDocument.saveBookmark(documents).enqueue(new retrofit2.Callback<Documents>() {
+            @Override
+            public void onResponse(Call<Documents> call, Response<Documents> response) {
+                if (!response.isSuccessful()) {
+                    return;
+                }
+
+                Log.d("save_bookmark", "bookmarked");
+            }
+
+            @Override
+            public void onFailure(Call<Documents> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void deleteBookmarks(Documents documents){
+        CallDocument callDocument = retrofit.create(CallDocument.class);
+        callDocument.deleteBookmarks(documents).enqueue(new retrofit2.Callback<Documents>() {
+            @Override
+            public void onResponse(Call<Documents> call, Response<Documents> response) {
+                if (!response.isSuccessful()) {
+                    return;
+                }
+
+                Log.d("delete_bookmark", "deleted_bookmark");
+            }
+
+            @Override
+            public void onFailure(Call<Documents> call, Throwable t) {
 
             }
         });
@@ -84,7 +139,16 @@ public class RequestDocumentsManager {
 
         @GET("Documents/{title}")
         Call<List<Documents>> getDocument(
-            @Path("title") String title
+                @Path("title") String title
         );
+
+        @POST("Bookmarks")
+        Call<Documents> saveBookmark(@Body Documents documents);
+
+        @POST("Bookmarks/delete")
+        Call<Documents> deleteBookmarks(@Body Documents documents);
+
+        @GET("Bookmarks/all")
+        Call<List<Documents>> getAllBookmark();
     }
 }

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.example.mystery1.R;
 import com.example.mystery1.control.remote.RequestDocumentsManager;
@@ -20,6 +21,7 @@ import com.example.mystery1.view.adapter.DocumentsAdapter;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.view.menu.MenuAdapter;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.SearchView;
@@ -81,39 +83,18 @@ public class MainActivity2 extends AppCompatActivity implements RequestDocuments
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_activity2, menu);
-//        MenuItem searchItem = menu.findItem(R.id.action_search);
-
-//        SearchManager searchManager = (SearchManager) MainActivity2.this.getSystemService(Context.SEARCH_SERVICE);
-//
-//        SearchView searchView = null;
-//        if (searchItem != null) {
-//            searchView = (SearchView) searchItem.getActionView();
-//        }
-//        if (searchView != null) {
-//            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity2.this.getComponentName()));
-//        }
-//
-//        SearchView finalSearchView = searchView;
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                if( !finalSearchView.isIconified()) {
-//                    finalSearchView.setIconified(true);
-//                }
-//                searchItem.collapseActionView();
-//
-//                if (Objects.equals(mAppBarConfiguration.getOpenableLayout(), R.id.nav_gallery)){
-//                    requestDocumentsManager.getDocument(MainActivity2.this, query);
-//                }
-//
-//                return false;
-//            }
-//            @Override
-//            public boolean onQueryTextChange(String s) {
-//                return false;
-//            }
-//        });
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_settings:
+                SettingsActivity.starter(MainActivity2.this);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

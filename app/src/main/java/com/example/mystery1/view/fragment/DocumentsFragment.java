@@ -1,7 +1,9 @@
 package com.example.mystery1.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,7 +20,10 @@ import com.example.mystery1.control.remote.RequestDocumentsManager;
 import com.example.mystery1.control.rest.Callback;
 import com.example.mystery1.databinding.FragmentDocumentsBinding;
 import com.example.mystery1.models.Documents;
+import com.example.mystery1.view.BottomSheetBookmark;
+import com.example.mystery1.view.activity.SearchDocumentActivity;
 import com.example.mystery1.view.adapter.DocumentsAdapter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +34,7 @@ public class DocumentsFragment extends Fragment {
 
     private DocumentsAdapter documentsAdapter;
     private RequestDocumentsManager requestDocumentsManager;
+    private BottomSheetBookmark bottomSheetBookmark;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -53,30 +59,47 @@ public class DocumentsFragment extends Fragment {
             }
         });
 
-        binding.revDocument.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//        binding.revDocument.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//
+//                int currentFirstVisible = layoutManager.findLastVisibleItemPosition();
+//                if (currentFirstVisible < documentsAdapter.getDocuments().size() - 1) {
+//                    binding.toTheTop.setVisibility(View.INVISIBLE);
+//                }
+//            }
+//
+//            @Override
+//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//
+//                if (dy > 0) {
+//                    binding.toTheTop.setVisibility(View.VISIBLE);
+//                    binding.toTheTop.setOnClickListener(view -> {
+//                        binding.toTheTop.setVisibility(View.INVISIBLE);
+//                        binding.revDocument.scrollToPosition(0);
+//                    });
+//                } else if (dy == 0) {
+//                    binding.toTheTop.setVisibility(View.INVISIBLE);
+//                }
+//            }
+//        });
+
+        binding.navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @SuppressLint("NonConstantResourceId")
             @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                int currentFirstVisible = layoutManager.findLastVisibleItemPosition();
-                if (currentFirstVisible < documentsAdapter.getDocuments().size() - 1) {
-                    binding.toTheTop.setVisibility(View.INVISIBLE);
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_search:
+                        SearchDocumentActivity.starter(getContext());
+                        return true;
+                    case R.id.action_bookmark:
+                        bottomSheetBookmark = new BottomSheetBookmark(getContext(), R.style.MaterialDialogSheet);
+                        bottomSheetBookmark.show();
+                        return true;
                 }
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                if (dy > 0) {
-                    binding.toTheTop.setVisibility(View.VISIBLE);
-                    binding.toTheTop.setOnClickListener(view -> {
-                        binding.toTheTop.setVisibility(View.INVISIBLE);
-                        binding.revDocument.scrollToPosition(0);
-                    });
-                } else if (dy == 0) {
-                    binding.toTheTop.setVisibility(View.INVISIBLE);
-                }
+                return false;
             }
         });
     }

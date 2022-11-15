@@ -18,10 +18,16 @@ import android.webkit.WebViewClient;
 
 import com.bumptech.glide.Glide;
 import com.example.mystery1.R;
+import com.example.mystery1.control.remote.RequestDocumentsManager;
+import com.example.mystery1.control.rest.Callback;
 import com.example.mystery1.databinding.ActivityDetailDocumentBinding;
+import com.example.mystery1.models.Documents;
+
+import java.util.List;
 
 public class DetailDocumentActivity extends AppCompatActivity {
     private ActivityDetailDocumentBinding binding;
+    private RequestDocumentsManager requestDocumentsManager;
 
     public static void starter(Context context, Bundle bundle) {
         Intent intent = new Intent(context, DetailDocumentActivity.class);
@@ -37,6 +43,8 @@ public class DetailDocumentActivity extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_detail_document);
 
+        requestDocumentsManager = new RequestDocumentsManager();
+
         String title = getIntent().getStringExtra(String.valueOf(R.string.title));
         String imgUrl = getIntent().getStringExtra(String.valueOf(R.string.imgUrl));
         String content = getIntent().getStringExtra(String.valueOf(R.string.content));
@@ -47,11 +55,40 @@ public class DetailDocumentActivity extends AppCompatActivity {
         binding.contentDocument.setWebViewClient(new WebViewClient());
         binding.contentDocument.loadUrl(content);
 
-        WebSettings webSettings =  binding.contentDocument.getSettings();
+        WebSettings webSettings = binding.contentDocument.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
         binding.scrollView.fullScroll(View.FOCUS_UP);
         binding.scrollView.pageScroll(View.FOCUS_UP);
+
+        Documents documents = new Documents(title, content, imgUrl);
+
+        requestDocumentsManager.getAllBookmark(new Callback() {
+            @Override
+            public void getDocument(List<Documents> list) {
+                super.getDocument(list);
+
+                for (Documents documents1 : list) {
+                    if (documents1.getTitle().equals(documents.getTitle())) {
+                        binding.clickBookmark.setChecked(true);
+                    }
+                }
+
+            }
+        });
+
+        binding.clickBookmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (binding.clickBookmark.isChecked()) {
+                    requestDocumentsManager.saveBookmarks(documents);
+                } else {
+                    requestDocumentsManager.deleteBookmarks(documents);
+                }
+            }
+        });
+
+
 
         binding.clickBack.setOnClickListener(new View.OnClickListener() {
             @Override
