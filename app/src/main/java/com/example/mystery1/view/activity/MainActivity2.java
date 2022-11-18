@@ -1,5 +1,6 @@
 package com.example.mystery1.view.activity;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
@@ -16,8 +18,10 @@ import android.widget.Toast;
 
 import com.example.mystery1.R;
 import com.example.mystery1.control.remote.RequestDocumentsManager;
+import com.example.mystery1.control.remote.RequestLanguagesManager;
 import com.example.mystery1.control.rest.Callback;
 import com.example.mystery1.databinding.ActivityMain2Binding;
+import com.example.mystery1.models.CurrentTag;
 import com.example.mystery1.models.Documents;
 import com.example.mystery1.util.Utility;
 import com.example.mystery1.view.adapter.DocumentsAdapter;
@@ -46,7 +50,7 @@ import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
-public class MainActivity2 extends AppCompatActivity implements RequestDocumentsManager.OnFetchDataListener{
+public class MainActivity2 extends AppCompatActivity implements RequestDocumentsManager.OnFetchDataListener {
     public static void starter(Context context) {
         Intent intent = new Intent(context, MainActivity2.class);
         context.startActivity(intent);
@@ -56,6 +60,8 @@ public class MainActivity2 extends AppCompatActivity implements RequestDocuments
     private ActivityMain2Binding binding;
     private RequestDocumentsManager requestDocumentsManager;
     private DocumentsAdapter documentsAdapter;
+
+    private RequestLanguagesManager requestLanguagesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +82,27 @@ public class MainActivity2 extends AppCompatActivity implements RequestDocuments
 //        navigationView.setBackgroundColor(getResources().getColor(R.color.black));
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        if (tagLanguage != null) {
+
+        CurrentTag currentTag = new CurrentTag();
+        requestLanguagesManager = new RequestLanguagesManager();
+
+        if (tagLanguage != "") {
             setLocale(tagLanguage);
+        } else {
+            @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("saved_tag", "en");
+            editor.putString("saved_language", "English");
+            editor.apply();
+
+            currentTag.setTextLanguage("English");
+            currentTag.setTag("en");
+
+            @SuppressLint("HardwareIds") String android_id = Settings.Secure.getString(MainActivity2.this.getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
+
+            currentTag.setDeviceID(android_id);
+
+            requestLanguagesManager.saveCurrentTag(currentTag);
         }
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
@@ -98,7 +123,7 @@ public class MainActivity2 extends AppCompatActivity implements RequestDocuments
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_settings:
                 SettingsActivity.starter(MainActivity2.this);
                 break;
@@ -118,7 +143,7 @@ public class MainActivity2 extends AppCompatActivity implements RequestDocuments
     public void onBackPressed() {
     }
 
-    private void showData(Documents document){
+    private void showData(Documents document) {
         List<Documents> documents = new ArrayList<>();
         documents.add(document);
         documentsAdapter.setDocuments(documents);
