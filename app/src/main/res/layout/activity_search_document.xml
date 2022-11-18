@@ -29,7 +29,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginEnd="5dp"
             android:background="@drawable/bg_search"
-            android:hint="Documents..."
+            android:hint="@string/document_hint"
             android:padding="10dp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"

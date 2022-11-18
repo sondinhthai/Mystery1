@@ -4,7 +4,10 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +39,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
@@ -57,6 +61,9 @@ public class MainActivity2 extends AppCompatActivity implements RequestDocuments
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("SavedLanguage", Context.MODE_PRIVATE);
+        String tagLanguage = sharedPreferences.getString("saved_tag", "");
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main2);
 
         requestDocumentsManager = new RequestDocumentsManager();
@@ -69,11 +76,14 @@ public class MainActivity2 extends AppCompatActivity implements RequestDocuments
 //        navigationView.setBackgroundColor(getResources().getColor(R.color.black));
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-
+        if (tagLanguage != null) {
+            setLocale(tagLanguage);
+        }
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
                 .setOpenableLayout(drawer)
                 .build();
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -114,6 +124,35 @@ public class MainActivity2 extends AppCompatActivity implements RequestDocuments
         documentsAdapter.setDocuments(documents);
     }
 
+    public void setLocale(String tag) {
+        Resources resources = getResources();
+
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+
+        Configuration configuration = resources.getConfiguration();
+
+        if (tag != null) {
+            configuration.locale = new Locale(tag);
+        }
+
+        resources.updateConfiguration(configuration, metrics);
+
+        onConfigurationChanged(configuration);
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        NavigationView navigationView = binding.navView;
+
+        MenuItem menuVideo = navigationView.getMenu().findItem(R.id.nav_home);
+        menuVideo.setTitle(R.string.video);
+
+        MenuItem menuDocument = navigationView.getMenu().findItem(R.id.nav_gallery);
+        menuDocument.setTitle(R.string.document);
+    }
+
     @Override
     public void onFetchData(Documents documents, String title) {
         if (documents == null) {
@@ -127,5 +166,11 @@ public class MainActivity2 extends AppCompatActivity implements RequestDocuments
     @Override
     public void onError(String title) {
 
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

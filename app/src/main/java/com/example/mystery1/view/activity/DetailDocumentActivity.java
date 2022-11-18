@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -53,10 +54,14 @@ public class DetailDocumentActivity extends AppCompatActivity {
         binding.titleDocument.setText(title);
 
         binding.contentDocument.setWebViewClient(new WebViewClient());
-        binding.contentDocument.loadUrl(content);
 
         WebSettings webSettings = binding.contentDocument.getSettings();
         webSettings.setJavaScriptEnabled(true);
+
+        @SuppressLint("HardwareIds") String android_id = Settings.Secure.getString(DetailDocumentActivity.this.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+        binding.contentDocument.loadUrl(content + "/" + android_id);
 
         binding.scrollView.fullScroll(View.FOCUS_UP);
         binding.scrollView.pageScroll(View.FOCUS_UP);

@@ -25,4 +25,7 @@
     <string name="no_bookmark_here">No bookmark here</string>
     <string name="bookmarks">Bookmarks</string>
     <string name="settings">Settings</string>
+    <string name="language">Language</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="document_hint">Documents...</string>
 </resources>

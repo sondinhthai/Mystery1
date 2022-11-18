@@ -1,5 +1,6 @@
 package com.example.mystery1.view.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -7,10 +8,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,6 +26,7 @@ import com.example.mystery1.control.rest.Callback;
 import com.example.mystery1.databinding.ActivitySearchDocumentBinding;
 import com.example.mystery1.models.Documents;
 import com.example.mystery1.view.adapter.DocumentsAdapter;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +50,9 @@ public class SearchDocumentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_document);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("SavedLanguage", Context.MODE_PRIVATE);
+        String tagLanguage = sharedPreferences.getString("saved_tag", "");
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search_document);
 
         requestDocumentsManager = new RequestDocumentsManager();
@@ -52,6 +62,10 @@ public class SearchDocumentActivity extends AppCompatActivity {
         documentsAdapter = new DocumentsAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         binding.revDocument.setLayoutManager(layoutManager);
+
+        if (tagLanguage != null) {
+            setLocale(tagLanguage);
+        }
 
         requestDocumentsManager = new RequestDocumentsManager();
         requestDocumentsManager.getAllDocument(new Callback() {
@@ -105,5 +119,28 @@ public class SearchDocumentActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    public void setLocale(String tag) {
+        Resources resources = getResources();
+
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+
+        Configuration configuration = resources.getConfiguration();
+
+        if (tag != null) {
+            configuration.locale = new Locale(tag);
+        }
+
+        resources.updateConfiguration(configuration, metrics);
+
+        onConfigurationChanged(configuration);
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        binding.searchDocument.setHint(R.string.document_hint);
     }
 }

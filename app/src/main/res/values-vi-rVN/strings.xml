@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">Ngôn ngữ</string>
+    <string name="dark_mode">Chế độ tối</string>
+    <string name="settings">Cài đặt</string>
+    <string name="menu_search">Tìm kiếm</string>
+    <string name="menu_bookmark">Lưu trữ</string>
+    <string name="video">Videos</string>
+    <string name="document">Tài liệu</string>
+    <string name="document_hint">Tài liệu...</string>
+    <string name="bookmarks">Lưu trữ</string>
+</resources>
